@@ -67,60 +67,53 @@ class Wheel:
         GPIO.output(self.pin1, GPIO.LOW)
         GPIO.output(self.pin2, GPIO.LOW)
 
-class WheelAxle:
-    def __init__(self, Wheel1, Wheel2):
-        self.Wheel1 = Wheel1
-        self.Wheel2 = Wheel2
-
-    def SetWheelsForwardMovement(self):
-        self.Wheel1.MoveForward()
-        self.Wheel2.MoveForward()
-
-    def SetWheelsReverseMovement(self):
-        self.Wheel1.MoveReverse()
-        self.Wheel2.MoveReverse()
-
-    def StopWheels(self):
-        self.Wheel1.StopMovement()
-        self.Wheel2.StopMovement()
-
-    def SetWheelsLeftTurn(self):
-        self.Wheel1.MoveReverse()
-        self.Wheel2.MoveForward()
-
-    def SetWheelsRightTurn(self):
-        self.Wheel1.MoveForward()
-        self.Wheel2.MoveReverse()
-
 class AllWheels:
-    def __init__(self, FrontAxle, BackAxle):
-        self.FrontAxle = FrontAxle
-        self.BackAxle = BackAxle
+    def __init__(self, 
+        FrontLeftWheel, 
+        FrontRightWheel,
+        BackLeftWheel,
+        BackRightWheel):
+        self.FrontLeftWheel = FrontLeftWheel
+        self.FrontRightWheel = FrontRightWheel
+        self.BackLeftWheel = BackLeftWheel
+        self.BackRightWheel = BackRightWheel
 
     def Forward(self):
-        self.FrontAxle.SetWheelsForwardMovement()
+        self.FrontRightWheel.MoveForward()
+        self.FrontLeftWheel.MoveForward()
         #setReverse for backwheels since they are backwards
-        self.BackAxle.SetWheelsReverseMovement()
+        self.BackRightWheel.MoveReverse()
+        self.BackLeftWheel.MoveReverse()
 
     def Reverse(self):
-        self.FrontAxle.SetWheelsReverseMovement()
-        self.BackAxle.SetWheelsForwardMovement()
+        self.FrontRightWheel.MoveReverse()
+        self.FrontLeftWheel.MoveReverse()
+        self.BackLeftWheel.MoveForward()
+        self.BackRightWheel.MoveForward()
 
     def Stop(self):
-        self.FrontAxle.StopWheels()
-        self.BackAxle.StopWheels()
+        self.FrontRightWheel.StopMovement()
+        self.FrontLeftWheel.StopMovement()
+        self.BackRightWheel.StopMovement()
+        self.BackLeftWheel.StopMovement()
 
     def LeftTurn(self):
-        self.FrontAxle.SetWheelsLeftTurn()
-        self.BackAxle.SetWheelsRightTurn()
+        self.FrontRightWheel.MoveForward()
+        self.FrontLeftWheel.MoveReverse()
+        self.BackRightWheel.MoveReverse()
+        self.BackLeftWheel.MoveForward()
 
     def RightTurn(self):
-        self.FrontAxle.SetWheelsRightTurn()
-        self.BackAxle.SetWheelsLeftTurn()
+        self.FrontLeftWheel.MoveForward()
+        self.FrontRightWheel.MoveReverse()
+        self.BackLeftWheel.MoveReverse()
+        self.BackRightWheel.MoveForward()
 
     def SetSpeed(self, speedRating):
-        pFront.ChangeDutyCycle(speedRating)
-        pBack.ChangeDutyCycle(speedRating)
+        self.FrontRightWheel.ChangeDutyCycle(speedRating)
+        self.BackRightWheel.ChangeDutyCycle(speedRating)
+        self.FrontLeftWheel.ChangeDutyCycle(speedRating)
+        self.BackLeftWheel.ChangeDutyCycle(speedRating)
 
 #Instantiate Wheels
 FLW = Wheel(w1Pin1, w1Pin2)
@@ -128,12 +121,8 @@ FRW = Wheel(w2Pin1, w2Pin2)
 RLW = Wheel(w3Pin1, w3Pin2)
 RRW = Wheel(w4Pin1, w4Pin2)
 
-#Instantiate Axel Classes
-frontAxle = WheelAxle(FLW, FRW)
-rearAxle = WheelAxle(RLW, RRW)
-
 #Instantiate AllWheels class
-Mower = AllWheels(frontAxle, rearAxle)
+Mower = AllWheels(FLW, FRW, RLW, RRW)
 
 while(True):
     print("test\n>>>")
